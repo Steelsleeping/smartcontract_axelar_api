@@ -1,18 +1,22 @@
+const smartcontract = require("./smartcontract");
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require("express");
 const app = express();
 
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    res.send("Hello World");
+    res.send(smartcontract.test());
 });
 
 app.post("/bridge", (req, res) => {
-    const body = req.body;
-    console.log(`body: `, body);
+    const { wallet_address, source, destination, amount } = { ...req.body };
+    smartcontract.bridge(wallet_address, source, destination, amount);
     res.status(201).json(req.body);
 });
 
