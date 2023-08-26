@@ -24,6 +24,30 @@ const test = () => {
     return `Hello, Require! ${process.env.PRIVATE_KEY}`;
 };
 
+const getBalance = async (walletAddress, source) => {
+    let ssttAddress = null;
+    let rpcUrl = null;
+    let chainId = null;
+
+    if (source === "Fantom") {
+        ssttAddress = SSTT_FANTOM;
+        rpcUrl = RPC_FANTOM_URL;
+        chainId = CHAIN_ID_FANTOM;
+    } else if (source === "Avalance") {
+        ssttAddress = SSTT_AVALANCE;
+        rpcUrl = RPC_AVALANCE_URL;
+        chainId = CHAIN_ID_AVALANCE;
+    }
+    
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
+    const ssttContract = new ethers.Contract(ssttAddress, ERC20ABI, provider);
+    const decimals = await ssttContract.decimals();
+    const balance = await ssttContract.balanceOf(walletAddress);
+    const res = formatUnits(balance, decimals)
+    console.log("balance", res);
+    return res;
+};
+
 const bridge = async (
     walletAddress = "0x439B1e41aBB213Ed475Bbf6A9c35ad6a2db3bc26",
     source = null,
@@ -70,7 +94,7 @@ const bridge = async (
     console.log(`Bridge: `, bridge);
 
     const approveTxSigned = await signer.signTransaction(approveTxUnsigned);
-    const submittedTx = await provider.sendTransaction(approveTxSigned);
+    const submittedTx = await signer.sendTransaction(approveTxSigned);
 
     const approveReceipt = await submittedTx.wait();
     if (approveReceipt.status === 0)
@@ -83,4 +107,4 @@ const bridge = async (
     console.log("balance", formatUnits(balance, decimals));
 };
 
-module.exports = { bridge, test };
+module.exports = { getBalance, bridge, test };

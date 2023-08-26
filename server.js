@@ -14,6 +14,11 @@ app.get("/", (req, res) => {
     res.send(smartcontract.test());
 });
 
+app.get("/balance", (req, res) => {
+    const resp = smartcontract.getBalance(req.query.wallet_address, req.query.source);
+    res.send(resp);
+});
+
 app.post("/bridge", (req, res) => {
     const { wallet_address, source, destination, amount } = { ...req.body };
     smartcontract.bridge(wallet_address, source, destination, amount);
