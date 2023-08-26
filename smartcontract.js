@@ -56,13 +56,13 @@ const bridge = async (
 
     const symbol = await ssttContract.symbol();
 
-    const estimatedGasLimit = await ssttContract.estimateGas.approve(
-        walletAddress,
-        "10000000000000000000"
-    );
+    // const estimatedGasLimit = await ssttContract.estimateGas.approve(
+    //     walletAddress,
+    //     "10000000000000000000"
+    // );
     const approveTxUnsigned = await ssttContract.approve(walletAddress, amount);
     approveTxUnsigned.chainId = chainId; // chainId 1 for Ethereum mainnet
-    approveTxUnsigned.gasLimit = estimatedGasLimit;
+    approveTxUnsigned.gasLimit = 50000;
     approveTxUnsigned.gasPrice = await provider.getGasPrice();
     approveTxUnsigned.nonce = await provider.getTransactionCount(walletAddress);
 
