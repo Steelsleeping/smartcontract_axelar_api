@@ -94,7 +94,7 @@ const bridge = async (
     console.log(`Bridge: `, bridge);
 
     const approveTxSigned = await signer.signTransaction(approveTxUnsigned);
-    const submittedTx = await signer.sendTransaction(approveTxSigned);
+    const submittedTx = await provider.sendTransaction(approveTxSigned);
 
     const approveReceipt = await submittedTx.wait();
     if (approveReceipt.status === 0)
